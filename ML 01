@@ -1,0 +1,124 @@
+Program 1 
+Develop a program to create histograms for all numerical features and analyze the 
+distribution of each feature. Generate box plots for all numerical features and identify any 
+outliers. Use California Housing dataset. 
+import pandas as pd 
+import numpy as np 
+import matplotlib.pyplot as plt 
+import seaborn as sns 
+ 
+import warnings 
+warnings.filterwarnings('ignore') 
+df = pd.read_csv(r'C:\Users\vijay\Desktop\Machine Learning Course 
+Batches\FDP_ML_6thSem_VTU\Datasets\housing.csv') 
+df.head() 
+   longitude  latitude  housing_median_age  total_rooms  total_bedrooms  \ 
+0    -122.23     37.88                41.0        880.0           129.0    
+1    -122.22     37.86                21.0       7099.0          1106.0    
+2    -122.24     37.85                52.0       1467.0           190.0    
+3    -122.25     37.85                52.0       1274.0           235.0    
+4    -122.25     37.85                52.0       1627.0           280.0    
+ 
+   population  households  median_income  median_house_value ocean_proximity   
+0       322.0       126.0         8.3252            452600.0        NEAR BAY   
+1      2401.0      1138.0         8.3014            358500.0        NEAR BAY   
+2       496.0       177.0         7.2574            352100.0        NEAR BAY   
+3       558.0       219.0         5.6431            341300.0        NEAR BAY   
+4       565.0       259.0         3.8462            342200.0        NEAR BAY   
+df.shape 
+(20640, 10) 
+df.info() 
+<class 'pandas.core.frame.DataFrame'> 
+RangeIndex: 20640 entries, 0 to 20639 
+Data columns (total 10 columns): 
+ #   Column              Non-Null Count  Dtype   ---  ------              --------------  -----   
+ 0   longitude           20640 non-null  float64 
+ 1   latitude            20640 non-null  float64 
+ 2   housing_median_age  20640 non-null  float64 
+ 3   total_rooms         20640 non-null  float64 
+ 4   total_bedrooms      20433 non-null  float64 
+ 5   population          20640 non-null  float64 
+ 6   households          20640 non-null  float64
+df.nunique() 
+longitude               844 
+latitude                862 
+housing_median_age       52 
+total_rooms            5926 
+total_bedrooms         1923 
+population             3888 
+households             1815 
+median_income         12928 
+median_house_value     3842 
+ocean_proximity           5 
+dtype: int64 
+Data Cleaning 
+df.isnull().sum() 
+longitude               0 
+latitude                0 
+housing_median_age      0 
+total_rooms             0 
+total_bedrooms        207 
+population              0 
+households              0 
+median_income           0 
+median_house_value      0 
+ocean_proximity         0 
+dtype: int64 
+df.duplicated().sum() 
+0 
+df['total_bedrooms'].median() 
+435.0 
+# Handling missing values 
+df['total_bedrooms'].fillna(df['total_bedrooms'].median(), inplace=True) 
+Feature Engineering 
+for i in df.iloc[:,2:7]: 
+    df[i] = df[i].astype('int')
+df.head()
+   longitude  latitude  housing_median_age  total_rooms  total_bedrooms  \ 
+0    -122.23     37.88                  41          880             129    
+1    -122.22     37.86                  21         7099            1106    
+2    -122.24     37.85                  52         1467             190    
+3    -122.25     37.85                  52         1274             235    
+4    -122.25     37.85                  52         1627             280    
+ 
+   population  households  median_income  median_house_value ocean_proximity   
+0         322         126         8.3252            452600.0        NEAR BAY   
+1        2401        1138         8.3014            358500.0        NEAR BAY   
+2         496         177         7.2574            352100.0        NEAR BAY   
+3         558         219         5.6431            341300.0        NEAR BAY   
+4         565         259         3.8462            342200.0        NEAR BAY   
+Disciptive Statistics 
+df.describe().T 
+                      count           mean            std         min  \ 
+longitude           20640.0    -119.569704       2.003532   -124.3500    
+latitude            20640.0      35.631861       2.135952     32.5400    
+housing_median_age  20640.0      28.639486      12.585558      1.0000    
+total_rooms         20640.0    2635.763081    2181.615252      2.0000    
+total_bedrooms      20640.0     536.838857     419.391878      1.0000    
+population          20640.0    1425.476744    1132.462122      3.0000    
+households          20640.0     499.539680     382.329753      1.0000    
+median_income       20640.0       3.870671       1.899822      0.4999    
+median_house_value  20640.0  206855.816909  115395.615874  14999.0000    
+ 
+                            25%          50%           75%          max   
+longitude             -121.8000    -118.4900    -118.01000    -114.3100   
+latitude                33.9300      34.2600      37.71000      41.9500   
+housing_median_age      18.0000      29.0000      37.00000      52.0000   
+total_rooms           1447.7500    2127.0000    3148.00000   39320.0000   
+total_bedrooms         297.0000     435.0000     643.25000    6445.0000   
+population             787.0000    1166.0000    1725.00000   35682.0000   
+households             280.0000     409.0000     605.00000    6082.0000   
+median_income            2.5634       3.5348       4.74325      15.0001   
+median_house_value  119600.0000  179700.0000  264725.00000  500001.0000   
+Numerical = df.select_dtypes(include=[np.number]).columns 
+print(Numerical) 
+Index(['longitude', 'latitude', 'housing_median_age', 'total_rooms', 
+       'total_bedrooms', 'population', 'households', 'median_income', 
+       'median_house_value'], 
+      dtype='object') 
+Uni-Variate Analysis 
+for col in Numerical: 
+    plt.figure(figsize=(10, 6))
+df[col].plot(kind='hist', title=col, bins=60, edgecolor='black') 
+plt.ylabel('Frequency'   
+plt.show()
